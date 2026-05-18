@@ -1,5 +1,5 @@
 from decimal import Decimal
-from datetime import datetime,timezone
+from datetime import datetime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from app.database import Base
@@ -30,4 +30,4 @@ class Operation(Base):
     currency: Mapped[CurrencyEnum]
     category: Mapped[str | None ] = mapped_column(default=None)
     subcategory: Mapped[str | None] = mapped_column(default=None)
-    created_at: Mapped[datetime] =  mapped_column(default=lambda :datetime.now(timezone.utc))
+    created_at: Mapped[datetime] =  mapped_column(default=lambda :datetime.now())
