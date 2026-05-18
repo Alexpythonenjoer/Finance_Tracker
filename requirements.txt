@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlalchemy
+asyncpg
+alembic
+pydantic
+python-multipart
+aiohttp
+sqlalchemy_utils
+requests
+itsdangerous
+psycopg2-binary
+redis

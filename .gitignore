@@ -1,0 +1,40 @@
+# Виртуальное окружение
+venv/
+env/
+ENV/
+.venv/
+
+# Файлы IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Файлы БД (если локально остались)
+*.db
+*.sqlite
+*.sqlite3
+
+# Переменные окружения с секретами
+.env
+.env.local
+.env.production
+
+# Docker volumes (обычно хранятся вне проекта, но на всякий случай)
+postgres_data/
+redis_data/
+
+# Логи и временные файлы
+*.log
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Alembic версии (все файлы миграций нужны, но __pycache__ исключаем)
+alembic/versions/__pycache__/
+
+# Файлы отчётов, загрузки
+*.pdf
+*.xlsx
