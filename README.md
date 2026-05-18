@@ -46,7 +46,7 @@ REDIS_DB=0
 ## 🐳 Запуск через Docker Compose (рекомендованный способ)
 **Клонируйте репозиторий**
 ```
-git clone https://github.com/ваш-логин/finance-tracker.git
+git clone https://github.com/Alexpythonenjoer/Finance_Tracker.git
 ```
 ```
 cd finance-tracker
