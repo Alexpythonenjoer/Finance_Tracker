@@ -46,33 +46,30 @@ services:
       - redis
       - postgres
     restart: unless-stopped
-  worker:
-    build: . # Используем тот же Dockerfile
-    container_name: finance_worker
-    command: rq worker --url redis://redis:6379 default
+  celery_worker:
+    build: .
+    container_name: finance_celery_worker
+    command: celery -A app.celery_app worker --loglevel=info
     environment:
-      - REDIS_HOST=redis
-      # Воркеру нужны ВСЕ переменные окружения, чтобы он мог работать с вашим кодом
-      - POSTGRES_SERVER=postgres
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
-      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY} # и другие, если нужны
-      - PYTHONPATH=/app # чтобы Python находил модуль app
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - DATABASE_URL=postgresql+asyncpg://postgres:...@postgres:5432/finance_db
+    depends_on:
+      - redis
+      - postgres
     volumes:
-      - ./app:/app/app # Монтируем код для живой разработки, если нужно
-    depends_on:
-      - redis
-      - app # Воркер теоретически может стартовать и без app, но для логики пусть зависит
-  dashboard:
-    image: hannes221/rq-dashboard-fast:latest
-    container_name: finance_dashboard
+      - ./app:/app/app
+
+  flower:
+    image: mher/flower
+    container_name: finance_flower
+    command: celery --broker=redis://redis:6379/0 flower --port=5555
     ports:
-      - "9181:8000" # Пробрасываем порт дашборда на хост
-    environment:
-      - REDIS_URL=redis://redis:6379 # Указываем, где находится Redis
+      - "5555:5555"
     depends_on:
       - redis
+      - celery_worker
+
 volumes:
   postgres_data:
   redis_data:

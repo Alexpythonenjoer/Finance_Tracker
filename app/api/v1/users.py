@@ -8,8 +8,7 @@ from app.service import users as users_service
 from app.dependency import get_db, get_current_user
 from app.repository import users as users_repository
 from app.schemas import UserRequest, UserResponse
-from app import tasks
-from app.rq_config import task_queue
+from app.tasks import send_welcome_email
 
 router = APIRouter()
 
@@ -21,18 +20,17 @@ async def create_user(payload: UserRequest,db: AsyncSession= Depends(get_db)):
 async def get_current_user(current_user: User = Depends(get_current_user)):
     return  UserResponse.model_validate(current_user)
 
-@router.post("/users/{user_id}/send-welcome-email/")
-async def send_welcome(user_id: int, db: AsyncSession = Depends(get_db)):
+@router.post("/users/{user_id}/send-welcome-email")
+async def send_welcome_email_endpoint(user_id: int, db: AsyncSession = Depends(get_db)):
     """
-    Эндпоинт для постановки задачи отправки приветственного письма в очередь.
+    Ставит в очередь Celery задачу на отправку приветственного письма пользователю.
     """
-    # Здесь вы можете получить данные пользователя из базы данных
-    user = await users_repository.get_user_by_id(db, user_id)  # Вам нужно добавить такой метод
+    # Проверяем, существует ли пользователь (опционально, но рекомендуется)
+    user = await users_repository.get_user_by_id(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Ставим задачу в RQ-очередь
-    job = task_queue.enqueue(tasks.send_welcome_email, user.login)
+    # Отправляем задачу в Celery (асинхронно, не дожидаемся выполнения)
+    task = send_welcome_email.delay(user_id)
 
-    # Возвращаем результат, не дожидаясь выполнения самой задачи
-    return {"message": "Task enqueued", "job_id": job.id}
+    return {"message": "Task enqueued", "task_id": task.id}

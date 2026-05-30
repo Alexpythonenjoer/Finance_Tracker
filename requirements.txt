@@ -16,4 +16,5 @@ pytest-asyncio
 httpx
 aiosqlite
 openrouter
-rq
+celery[redis]
+flower
