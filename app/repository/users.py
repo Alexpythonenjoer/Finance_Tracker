@@ -7,6 +7,10 @@ async def get_user(db:AsyncSession,login:str) ->User|None:
     result = await db.execute(select(User).where(User.login == login))
     return result.scalar_one_or_none()
 
+async def get_user_by_id(db: AsyncSession, user_id: int) -> User | None:
+    """Находит пользователя по его числовому ID."""
+    result = await db.execute(select(User).where(User.id == user_id))
+    return result.scalar_one_or_none()
 
 async def create_user(db:AsyncSession, login:str) -> User:
     user = User(login=login)
