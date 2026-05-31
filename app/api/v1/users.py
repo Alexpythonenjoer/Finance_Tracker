@@ -25,12 +25,11 @@ async def send_welcome_email_endpoint(user_id: int, db: AsyncSession = Depends(g
     """
     Ставит в очередь Celery задачу на отправку приветственного письма пользователю.
     """
-    # Проверяем, существует ли пользователь (опционально, но рекомендуется)
     user = await users_repository.get_user_by_id(db, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Отправляем задачу в Celery (асинхронно, не дожидаемся выполнения)
+    # Отправляем задачу в Celery
     task = send_welcome_email.delay(user_id)
 
     return {"message": "Task enqueued", "task_id": task.id}

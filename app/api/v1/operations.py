@@ -52,7 +52,6 @@ async def suggest_transaction_category(
 ):
     """
     Предлагает категорию для транзакции на основе описания.
-    Использует кеширование в Redis для экономии запросов к API.
     """
     # Проверка существования кошелька
     wallet = await wallets_repository.is_wallet_exist(
