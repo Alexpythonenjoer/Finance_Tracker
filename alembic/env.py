@@ -5,23 +5,21 @@ from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 from alembic import context
 
-# Добавляем корень проекта в sys.path, чтобы импортировать модуль app
+
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Импортируем Base из вашего database.py
+
 from app.database import Base
+from app import models
 
-# Импортируйте все модели, чтобы Alembic их увидел
-from app import models  # или отдельно from app.models import User, Wallet, Operation
 
-# Это объект конфигурации Alembic
 config = context.config
 
-# Настройка логирования (опционально)
+
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# Метаданные для автогенерации
+
 target_metadata = Base.metadata
 
 def run_migrations_offline() -> None:

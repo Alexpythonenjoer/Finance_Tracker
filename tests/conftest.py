@@ -10,10 +10,10 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_asyn
 
 from app.dependency import get_db
 
-# Добавляем путь к тестовому модулю
+
 sys.path.insert(0, str(Path(__file__).parent))
 
-# Подменяем redis_client на мок
+
 import redis_mock
 import app.redis_client as real_redis_client
 real_redis_client.init_redis_pool = redis_mock.init_redis_pool
@@ -21,11 +21,11 @@ real_redis_client.close_redis_pool = redis_mock.close_redis_pool
 real_redis_client.get_redis = redis_mock.get_redis
 real_redis_client.redis_pool = redis_mock.mock_redis_instance  # чтобы не было None
 
-# Теперь можно импортировать приложение
+
 from app.database import Base
 from main import app
 
-# Остальная настройка тестов...
+
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 test_engine = create_async_engine(TEST_DATABASE_URL, echo=False)
 TestAsyncSessionLocal = async_sessionmaker(test_engine, class_=AsyncSession, expire_on_commit=False)

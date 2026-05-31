@@ -9,7 +9,6 @@ REDIS_URL = f"redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
 TESTING = os.getenv("TESTING", "").lower() == "true"
 
 class MockRedis:
-    """Заглушка Redis для тестов"""
     async def get(self, key):
         return None
     async def setex(self, key, time, value):
@@ -22,7 +21,7 @@ class MockRedis:
         pass
 
 if TESTING:
-    # Заглушка
+
     _mock_redis = MockRedis()
     async def init_redis_pool():
         print("Redis disabled for testing, using mock")
@@ -32,7 +31,7 @@ if TESTING:
     def get_redis():
         return _mock_redis
 else:
-    # Реальная реализация
+
     redis_pool: ConnectionPool | None = None
 
     async def init_redis_pool() -> Redis:

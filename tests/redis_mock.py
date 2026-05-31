@@ -1,4 +1,4 @@
-# tests/redis_mock.py
+
 from unittest.mock import AsyncMock
 
 class MockRedis:

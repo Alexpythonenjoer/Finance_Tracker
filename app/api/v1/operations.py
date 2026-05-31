@@ -50,33 +50,25 @@ async def suggest_transaction_category(
         current_user: User = Depends(get_current_user),
         redis_client: Redis = Depends(get_redis_client)
 ):
-    """
-    Предлагает категорию для транзакции на основе описания.
-    """
-    # Проверка существования кошелька
     wallet = await wallets_repository.is_wallet_exist(
         db, current_user.id, request.wallet_name
     )
     if not wallet:
         raise HTTPException(status_code=404, detail="Wallet not found")
 
-    # Текст для анализа
     text_to_analyze = request.category or request.description
     if not text_to_analyze:
         raise HTTPException(status_code=400, detail="No text to analyze")
 
-    # Проверка кеша в Redis
     cache_key = f"ai_cat:{text_to_analyze.lower().strip()}"
     cached = await redis_client.get(cache_key)
     if cached:
         return {"suggested_category": cached.decode() if isinstance(cached, bytes) else cached}
 
-    # Запрос к OpenRouter API
     suggested = await ai_service.suggest_category(text_to_analyze)
     if not suggested:
         suggested = "Другое"
 
-    # Сохраняем в Redis на 24 часа для экономии API-запросов
     await redis_client.setex(cache_key, 86400, suggested)
 
     return {"suggested_category": suggested}

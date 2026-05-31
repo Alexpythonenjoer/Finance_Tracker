@@ -2,7 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import os
 
-# Используем те же переменные окружения, что и для асинхронной БД
+
 POSTGRES_USER = os.getenv("POSTGRES_USER", "postgres")
 POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "mysecretpassword")
 POSTGRES_SERVER = os.getenv("POSTGRES_SERVER", "postgres")

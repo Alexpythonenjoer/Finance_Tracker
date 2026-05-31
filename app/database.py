@@ -20,6 +20,6 @@ SessionLocal = async_sessionmaker(engine, class_=AsyncSession, expire_on_commit=
 Base = declarative_base()
 
 async def init_db():
-    """Создаёт таблицы, если их нет"""
+
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)

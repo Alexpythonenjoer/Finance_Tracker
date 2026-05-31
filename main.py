@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
     await init_redis_pool()
     logger.info("Application startup complete.")
     yield
-    # Действия при остановке
+
     await close_redis_pool()
     logger.info("Application shutdown complete.")
 
@@ -37,11 +37,11 @@ app.mount('/static', StaticFiles(directory='app/static'),name='static')
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Запуск
+
     await init_db()
     if not os.getenv("TESTING"):
         await init_redis_pool()
     yield
-    # Остановка
+
     if not os.getenv("TESTING"):
         await close_redis_pool()
